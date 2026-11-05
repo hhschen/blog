@@ -1,0 +1,132 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const blogs = [
+    {
+        name: "資工小廢物 - JN",
+        url: "https://blog.giveanornot.com",
+        tags: ["IndiePing", "雲端工程師", "女裝"],
+    },
+    {
+        name: "Wiwi.Blog",
+        url: "https://wiwi.blog",
+        tags: ["音樂", "好和弦", "創作"],
+    },
+    {
+        name: "Eddie Lv",
+        url: "https://eddielv.com",
+        tags: ["吉他島嶼", "燈光音響技師", "生活"],
+    },
+    {
+        name: "Shuo-Jen's Blog",
+        url: "https://shuojen.com",
+        tags: ["土木工程師", "攝影", "生活"],
+    },
+    {
+        name: "Sean Carroll Blog",
+        url: "https://preposterousuniverse.com/blog/",
+        tags: ["物理", "宇宙", "哲學"],
+    },
+    {
+        name: "Julia Evans",
+        url: "https://jvns.ca",
+        tags: ["程式語言", "科技", "硬核知識"],
+    },
+    {
+        name: "竹帚日記",
+        url: "http://www.typemoon.org/bbb/diary/",
+        tags: ["TYPE-MOON", "奈須蘑菇", "後日談"],
+    },
+];
+---
+
+<BaseLayout title="Blogroll | Probably a Blog.">
+    <main class="mx-auto max-w-4xl px-6 py-16">
+        <h1 class="mb-3 text-4xl font-bold">網路上的其他角落</h1>
+
+        <p class="mb-8 text-muted">網路很大，這些地方值得迷路一下。</p>
+
+        <hr class="mb-8 border-line" />
+
+        <!-- Introduction -->
+        <div class="mt-4 mb-8 max-w-4xl space-y-4 text-pretty leading-8 text-ink">
+            <p>這裡收集了一些我平常會逛，或單純覺得有趣的個人網站。</p>
+
+            <p>
+                跟站長們
+                <ruby>
+                    不一定<rt>全部不</rt>
+                </ruby>
+                認識，連結也是我自己擅自放上去的。對方可能根本不知道有這個地方存在。
+            </p>
+
+            <p>
+                如果你發現自己的網站出現在這裡，先說聲抱歉，這完全是我的個人行為。不要打我.jpg
+            </p>
+        </div>
+
+        <!-- Collected Links -->
+        <section class="mt-12 rounded-xl border border-line px-6 py-6 md:px-8">
+            <!-- Registry Header -->
+            <div
+                class="flex flex-wrap items-center justify-between gap-3
+                        border-b border-line pb-5"
+            >
+                <h2 class="font-mono text-sm font-semibold tracking-wide">
+                    Blogroll / 部落卷
+                </h2>
+
+                <span class="font-mono text-xs text-muted">私自收錄中</span>
+            </div>
+
+            <!-- Registry Entries -->
+            <div class="grid grid-cols-1 gap-x-12 md:grid-cols-2">
+                {blogs.map((blog, index) => (
+                    <a
+                        href={blog.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="group block border-b border-line py-6"
+                    >
+                        <div class="flex items-start gap-4">
+                            <!-- Number -->
+                            <span class="shrink-0 font-mono text-sm text-accent">
+                                {String(index + 1).padStart(2, "0")}.
+                            </span>
+
+                            <div class="min-w-0 flex-1">
+                                <!-- Website Name -->
+                                <div class="flex items-start justify-between gap-3">
+                                    <h3
+                                        class="text-lg font-semibold
+                                               transition-colors group-hover:text-accent"
+                                    >
+                                        {blog.name}
+                                    </h3>
+
+                                    <span
+                                        class="shrink-0 text-muted transition-transform
+                                               group-hover:translate-x-0.5
+                                               group-hover:-translate-y-0.5"
+                                        aria-hidden="true"
+                                    >
+                                        ↗
+                                    </span>
+                                </div>
+
+                                <!-- Tags -->
+                                <div class="mt-3 flex flex-wrap gap-x-3 gap-y-1">
+                                    {blog.tags.map((tag) => (
+                                        <span class="text-xs text-muted">
+                                            #{tag}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                ))}
+            </div>
+        </section>
+    </main>
+</BaseLayout>

@@ -1,0 +1,32 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-line">
+    <div class="mx-auto flex max-w-240 flex-col gap-3 px-6 py-6 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
+        <p>© {year} H2 · Probably a Blog.</p>
+
+        <div class="flex items-center gap-3">
+            <a
+                href="https://astro.build/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="hover:text-ink"
+            >
+                Powered by Astro
+            </a>
+
+            <span aria-hidden="true">·</span>
+
+            <a
+                href="https://github.com/hhschen"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub"
+                class="hover:text-ink"
+            >
+                <i class="nf nf-fa-github text-lg" aria-hidden="true"></i>
+            </a>
+        </div>
+    </div>
+</footer>

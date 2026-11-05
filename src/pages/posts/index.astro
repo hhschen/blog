@@ -1,0 +1,144 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+const posts = (await getCollection("posts")).sort(
+    (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
+);
+
+const categories = ["All", "Studies", "Tech", "ACG", "Gibberish"];
+---
+
+<BaseLayout title="所有文章 - Probably a Blog." description="PAB 的所有文章">
+    <main class="mx-auto max-w-240 px-6 pt-16 pb-24">
+        <section>
+            <h1 class="text-4xl font-bold tracking-tight">所有文章</h1>
+
+            <p class="mt-4 text-muted">
+                一些筆記、心得，以及偶爾認真的胡言亂語。
+            </p>
+        </section>
+
+        <hr class="mt-5 mb-6 border-0 border-t border-line" />
+
+        <div id="category-buttons" class="mb-8 flex flex-wrap gap-2">
+            {categories.map((category) => (
+                <button
+                    type="button"
+                    data-category={category}
+                    aria-pressed={category === "All"}
+                    class="rounded-full border border-line px-4 py-2
+                       text-sm text-muted transition-colors hover:bg-hover
+                       aria-pressed:bg-ink aria-pressed:text-page"
+                >
+                    {category}
+                </button>
+            ))}
+        </div>
+
+        <section id="post-list" class="mt-5">
+            {posts.length > 0 ? (
+                posts.map((post) => (
+                    <div
+                        data-post-category={post.data.category}
+                        class="border-b border-line"
+                    >
+                        <a
+                            href={`/posts/${post.id}`}
+                            class="group flex items-center justify-between gap-6 py-7"
+                        >
+                            <div>
+                                <div class="mb-3 flex items-center gap-3 text-sm text-muted">
+                                    <span class="text-accent">
+                                        {post.data.category}
+                                    </span>
+                                    <span>·</span>
+                                    <time
+                                        datetime={post.data.pubDate.toISOString()}
+                                    >
+                                        {post.data.pubDate.toLocaleDateString(
+                                            "zh-TW",
+                                        )}
+                                    </time>
+                                </div>
+
+                                <h2 class="text-xl font-semibold transition-colors group-hover:text-accent">
+                                    {post.data.title}
+                                </h2>
+
+                                <p class="mt-2 text-sm text-muted">
+                                    {post.data.description}
+                                </p>
+                            </div>
+
+                            <span class="shrink-0 text-xl text-muted transition-transform group-hover:translate-x-1">
+                                →
+                            </span>
+                        </a>
+                    </div>
+                ))
+            ) : (
+                <p class="py-12 text-center text-muted">
+                    目前還沒有文章，敬請期待！
+                </p>
+            )}
+            <p id="empty-category" hidden class="py-12 text-center text-muted">
+                這個分類還沒有文章，可能作者還在拖稿。
+            </p>
+        </section>
+    </main>
+</BaseLayout>
+
+<script is:inline>
+    const buttons = document.querySelectorAll("button[data-category]");
+    const posts = document.querySelectorAll("[data-post-category]");
+    const emptyMessage = document.querySelector("#empty-category");
+
+    const validCategories = ["All", "Studies", "Tech", "ACG", "Gibberish"];
+
+    function filterPosts(category) {
+        buttons.forEach((button) => {
+            button.setAttribute(
+                "aria-pressed",
+                String(button.dataset.category === category),
+            );
+        });
+
+        let visibleCount = 0;
+
+        posts.forEach((post) => {
+            const visible =
+                category === "All" || post.dataset.postCategory === category;
+
+            post.style.display = visible ? "" : "none";
+
+            if (visible) visibleCount++;
+        });
+
+        if (emptyMessage) {
+            emptyMessage.hidden = posts.length === 0 || visibleCount > 0;
+        }
+    }
+
+    const requestedCategory =
+        new URLSearchParams(location.search).get("category") ?? "All";
+
+    filterPosts(
+        validCategories.includes(requestedCategory) ? requestedCategory : "All",
+    );
+
+    buttons.forEach((button) => {
+        button.addEventListener("click", () => {
+            const category = button.dataset.category;
+            filterPosts(category);
+
+            const url = new URL(location.href);
+            if (category === "All") {
+                url.searchParams.delete("category");
+            } else {
+                url.searchParams.set("category", category);
+            }
+            history.replaceState(null, "", url);
+        });
+    });
+</script>

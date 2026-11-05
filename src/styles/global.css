@@ -1,0 +1,155 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* Light Mode */
+:root {
+    --bg: #F7F3EA;
+    --fg: #342F2B;
+    --muted: #746B62;
+    --surface: #FFFCF7;
+    --line: #D6CEC3;
+    --accent: #92795D;
+    --hover: #EDE6DA;
+}
+
+/* Dark Mode */
+html.dark {
+    color-scheme: dark;
+
+    --bg: #202124;
+    --fg: #F1ECE3;
+    --muted: #B4ACA3;
+    --surface: #292A2D;
+    --line: #494440;
+    --accent: #C0A384;
+    --hover: #383A3D;
+}
+
+/* Theme */
+@theme inline {
+    --color-page: var(--bg);
+    --color-ink: var(--fg);
+    --color-muted: var(--muted);
+    --color-surface: var(--surface);
+    --color-line: var(--line);
+    --color-accent: var(--accent);
+    --color-hover: var(--hover);
+}
+
+/* Global Styles */
+body {
+    background-color: var(--bg);
+    color: var(--fg);
+}
+
+/* Theme Icons */
+.theme-icon-sun {
+    display: none;
+}
+
+html.dark .theme-icon-moon {
+    display: none;
+}
+
+html.dark .theme-icon-sun {
+    display: block;
+}
+
+
+/* Markdown article typography */
+.prose.post-content {
+    --tw-prose-body: var(--fg);
+    --tw-prose-headings: var(--fg);
+    --tw-prose-bold: var(--fg);
+    --tw-prose-links: var(--accent);
+    --tw-prose-code: var(--fg);
+    --tw-prose-hr: var(--line);
+    --tw-prose-bullets: var(--accent);
+    --tw-prose-counters: var(--muted);
+    --tw-prose-quotes: var(--fg);
+}
+
+.post-content {
+    --markdown-spoiler-bar: var(--muted);
+}
+
+
+.post-content figure {
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+.post-content figcaption {
+  margin-top: 0.5rem;
+  color: #888;
+  font-size: 0.875rem;
+}
+
+
+/* Code theme */
+.dark .astro-code,
+.dark .astro-code span {
+    color: var(--shiki-dark) !important;
+    background-color: var(--shiki-dark-bg) !important;
+}
+.post-content .astro-code {
+    border: 1px solid var(--line);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    overflow-x: auto;
+    font-size: 0.875rem;
+    line-height: 1.7;
+}
+.post-content .code-copy {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.3rem 0.65rem;
+    border: 1px solid var(--line);
+    border-radius: 0.4rem;
+    background: var(--surface);
+    color: var(--fg);
+    font-size: 0.75rem;
+    cursor: pointer;
+}
+
+.post-content .code-copy:hover {
+    background: var(--hover);
+}
+
+/* KaTeX horizontal scrolling */
+.post-content .katex-display {
+    max-width: 100%;
+    overflow-x: auto;
+    padding-block: 0.75rem;
+}
+/*.post-content .katex .sizing.reset-size6.size3 {
+    font-size: 0.7em;
+}*/
+/* Waline Guestbook */
+#waline,
+#waline .wl-panel {
+    /* Theme */
+    --waline-theme-color: var(--accent);
+    --waline-active-color: var(--accent);
+
+    /* Text */
+    --waline-color: var(--fg);
+    --waline-light-grey: var(--muted);
+    --waline-dark-grey: var(--muted);
+
+    /* Background */
+    --waline-bg-color: var(--surface);
+    --waline-bg-color-light: var(--hover);
+    --waline-bg-color-hover: var(--hover);
+
+    /* Border */
+    --waline-border-color: var(--line);
+
+    /* Additional elements */
+    --waline-bq-color: var(--hover);
+    --waline-info-bg-color: var(--surface);
+    --waline-info-color: var(--muted);
+    --waline-disable-bg-color: var(--hover);
+    --waline-disable-color: var(--muted);
+}

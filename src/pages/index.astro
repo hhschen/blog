@@ -1,0 +1,100 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PostCard from "../components/PostCard.astro";
+import { Image } from "astro:assets";
+import armillaryPen from "../assets/armillary-pen.png";
+
+import { getCollection } from "astro:content";
+const posts = await getCollection("posts");
+
+const recentPosts = posts
+    .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+    .slice(0, 3);
+---
+
+<BaseLayout
+    title="Probably a Blog. - H2"
+    description="物理、數學、科技與 ACG，還有一些沒人問的東西。"
+>
+    <main class="mx-auto max-w-240 px-6 pt-24 pb-16">
+        <!-- Hero Section -->
+        <section class="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_20rem]">
+            <div class="min-w-0">
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-accent">
+                    網路上的一隅 · by H2
+                </p>
+
+                <h1 class="mt-7 text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl">
+                    Probably a Blog<span class="text-accent">.</span>
+                </h1>
+
+                <p class="mt-5 text-lg text-muted">
+                    Studies, Tech, ACG, and things nobody asked for.
+                </p>
+
+                <p class="mt-8 max-w-130 leading-7">
+                    這裡有物理與數學筆記、科學趣聞、科技
+                    <ruby>
+                        折騰<rt>整活</rt>
+                    </ruby>
+                    紀錄，以及一些 ACG 心得。 剩下的就歸類成
+                    Gibberish。反正這大概就是個部落格...
+                </p>
+
+                <div class="mt-8 flex items-center gap-3">
+                    <a
+                        href="/now"
+                        class="inline-flex items-center gap-2 rounded-lg bg-ink px-5 py-3 text-sm font-medium text-page hover:opacity-85"
+                    >
+                        查看近況
+                        <span aria-hidden="true">→</span>
+                    </a>
+                    <a
+                        href="/about"
+                        class="inline-flex items-center rounded-lg border border-line px-5 py-3 text-sm font-medium text-ink hover:bg-hover"
+                    >
+                        關於作者
+                    </a>
+                </div>
+            </div>
+            <div class="flex items-center justify-center">
+                <Image
+                    src={armillaryPen}
+                    alt="鋼筆手繪風格的星象儀與鋼筆"
+                    class="w-full max-w-96 opacity-75 dark:opacity-80"
+                    loading="eager"
+                />
+            </div>
+        </section>
+
+        <!-- Divider -->
+        <hr class="mt-16 border-0 border-t border-line" />
+
+        <!-- Recent Posts Section -->
+        <section class="mt-16">
+            <div class="mb-8 flex items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold tracking-tight">
+                        最近寫了什麼
+                    </h2>
+                    <p class="mt-2 text-sm text-muted">
+                        一些筆記、心得，以及胡言亂語。
+                    </p>
+                </div>
+
+                <a
+                    href="/posts"
+                    class="shrink-0 text-sm font-medium text-accent hover:underline"
+                >
+                    所有文章 →
+                </a>
+            </div>
+
+            <div class="space-y-4">
+                {recentPosts.map((post) => (
+                    <PostCard post={post} headingTag="h3" />
+                ))}
+            </div>
+        </section>
+    </main>
+</BaseLayout>

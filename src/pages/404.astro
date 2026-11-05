@@ -1,0 +1,52 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { ArrowLeft } from "@lucide/astro";
+---
+
+<BaseLayout title="404 - Probably Not Found.">
+    <main class="mx-auto flex max-w-3xl flex-col items-center px-6 py-24 text-center">
+        <p class="text-xs font-bold tracking-[0.18em] text-accent">
+            PAGE NOT FOUND · PROBABLY.
+        </p>
+
+        <h1 class="mt-6 text-8xl font-extrabold tracking-tight text-accent">
+            404.
+        </h1>
+
+        <h2 class="mt-6 text-3xl font-bold">此頁面大概不存在。</h2>
+
+        <p id="error-message" class="mt-4 text-muted">
+            也可能存在，只是不在這個宇宙。¯\_(ツ)_/¯
+        </p>
+
+        <a
+            href="/"
+            class="mt-10 inline-flex items-center gap-2 rounded-lg bg-ink px-5 py-3 text-sm font-medium text-page hover:opacity-85"
+        >
+            <ArrowLeft size={18} aria-hidden="true" />
+            回到首頁
+        </a>
+
+        <p class="mt-8 text-xs text-muted">
+            如果你是從本站連結來的，那大概是 H2 程式寫太爛造成的。
+        </p>
+    </main>
+</BaseLayout>
+
+<script is:inline>
+    const messages = [
+        "也可能存在，只是不在這個宇宙。",
+        "你觀測的頁面似乎已經坍縮了。",
+        "HTTP 404：宇宙拒絕回答這個問題。",
+        "這個頁面目前處於量子疊加態。",
+        "這個頁面可能被剪定了。",
+        "或許你該試著重新定義「存在」。",
+    ];
+
+    const index = Math.floor(Math.random() * messages.length);
+    const message = document.getElementById("error-message");
+
+    if (message) {
+        message.textContent = messages[index];
+    }
+</script>

@@ -1,0 +1,75 @@
+---
+import { getCollection } from "astro:content";
+
+interface Props {
+    selectedYear: string;
+}
+
+const { selectedYear } = Astro.props;
+
+const currentYear = String(new Date().getFullYear());
+const archives = await getCollection("nowArchive");
+
+const years = [
+    ...new Set([currentYear, ...archives.map((archive) => archive.id)]),
+].sort((a, b) => Number(b) - Number(a));
+---
+
+<nav aria-label="近況年份">
+    <!-- RWD -->
+    <div class="md:hidden">
+        <label
+            for="now-year-select"
+            class="mb-3 block text-xs font-semibold tracking-widest text-muted"
+        >
+            ARCHIVE
+        </label>
+
+        <select
+            id="now-year-select"
+            class="w-full rounded-lg border border-line bg-surface
+                   px-4 py-3 text-ink
+                   focus-visible:outline-2 focus-visible:outline-accent"
+        >
+            {years.map((year) => (
+                <option
+                    value={year === currentYear ? "/now" : `/now/${year}`}
+                    selected={year === selectedYear}
+                >
+                    {year}
+                </option>
+            ))}
+        </select>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="hidden md:block">
+        <p class="mb-4 text-xs font-semibold tracking-widest text-muted">
+            ARCHIVE
+        </p>
+
+        {years.map((year) => (
+            <a
+                href={year === currentYear ? "/now" : `/now/${year}`}
+                aria-current={year === selectedYear ? "page" : undefined}
+                class:list={[
+                    "block rounded-lg px-4 py-3 transition-colors",
+                    year === selectedYear
+                        ? "bg-hover font-semibold text-accent"
+                        : "text-muted hover:bg-hover",
+                ]}
+            >
+                {year}
+            </a>
+        ))}
+    </div>
+</nav>
+
+<script>
+    const yearSelect =
+        document.querySelector<HTMLSelectElement>("#now-year-select");
+
+    yearSelect?.addEventListener("change", () => {
+        window.location.href = yearSelect.value;
+    });
+</script>

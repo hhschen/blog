@@ -1,0 +1,41 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+    title="Guestbook - Probably a Blog."
+    description="路過的話，歡迎在 PAB 留下幾句話。"
+>
+    <main class="mx-auto max-w-3xl px-6 py-16">
+        <h1 class="text-4xl font-bold">留言板</h1>
+
+        <p class="mt-4 text-muted">
+            路過的話，閒聊、建議都歡迎，嚴肅的問題也接受，但不保證有正經的回答。
+        </p>
+
+        <hr class="my-8 border-line" />
+
+        <div id="waline"></div>
+    </main>
+</BaseLayout>
+
+<script>
+    import { init } from "@waline/client";
+    import "@waline/client/waline.css";
+
+    init({
+        el: "#waline",
+        serverURL: "pab-waline.vercel.app",
+        path: "/guestbook",
+        lang: "zh-TW",
+        dark: "html.dark",
+        login: "disable",
+        meta: ["nick", "mail"],
+        requiredMeta: ["nick"],
+        imageUploader: false,
+        locale: {
+            placeholder:
+                "請勿留下個人敏感資訊，垃圾留言或人身攻擊言論會被移除…",
+        },
+    });
+</script>

@@ -1,0 +1,45 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import NowSidebar from "../../components/NowSidebar.astro";
+import { getCollection, render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import type { GetStaticPaths } from "astro";
+
+interface Props {
+    archive: CollectionEntry<"nowArchive">;
+}
+
+export const getStaticPaths = (async () => {
+    const archives = await getCollection("nowArchive");
+
+    return archives.map((archive) => ({
+        params: { year: archive.id },
+        props: { archive },
+    }));
+}) satisfies GetStaticPaths;
+
+const { archive } = Astro.props;
+const { Content } = await render(archive);
+
+const year = archive.id;
+---
+
+<BaseLayout title={`${year} 年近況 - Probably a Blog.`}>
+    <main class="mx-auto max-w-240 px-6 pt-16 pb-24">
+        <div class="grid gap-8 md:grid-cols-[10rem_minmax(0,1fr)]">
+            <NowSidebar selectedYear={year} />
+
+            <section class="min-w-0">
+                <h1 class="text-4xl font-bold">{year} 年近況</h1>
+
+                <p class="mt-4 text-muted">翻翻這一年留下來的紀錄。</p>
+
+                <hr class="my-8 border-0 border-t border-line" />
+
+                <article class="prose post-content max-w-none">
+                    <Content />
+                </article>
+            </section>
+        </div>
+    </main>
+</BaseLayout>

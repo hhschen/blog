@@ -1,0 +1,373 @@
+---
+import { Image } from "astro:assets";
+import anime1 from "../../assets/anime/anime-1.jpg";
+import anime2 from "../../assets/anime/anime-2.jpg";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import NowSidebar from "../../components/NowSidebar.astro";
+import { TvMinimalPlay } from "@lucide/astro";
+
+const watching = [
+    {
+        title: "學生會也有洞",
+        image: anime1,
+        url: "https://ani.gamer.com.tw/animeVideo.php?sn=51813",
+        status: "補番中",
+        progress: "第 4 集",
+        note: "從漫畫就開始追，動畫品質高到光是看畫面就是享受。然後，我愛こまろ！！！",
+    },
+    {
+        title: "畫完這個再去死",
+        image: anime2,
+        url: "https://ani.gamer.com.tw/animeVideo.php?sn=49850",
+        status: "補番中",
+        progress: "第 8 集",
+        note: "第一集結尾真的寫的很好，老師能遇到安海同學真是太好了。",
+    },
+];
+
+import { getCollection, render } from "astro:content";
+
+const entries = await getCollection("now");
+
+const notes = await Promise.all(
+    entries
+        .sort((a, b) => a.data.pubDate.getTime() - b.data.pubDate.getTime())
+        .map(async (entry) => ({
+            ...entry,
+            Content: (await render(entry)).Content,
+        })),
+);
+
+const currentYear = new Date().getFullYear();
+---
+
+<BaseLayout
+    title="近況 - Probably a Blog."
+    description="最近在做什麼，以及一些沒什麼營養的紀錄。"
+>
+    <main class="mx-auto max-w-240 px-6 pt-16 pb-24">
+        <!-- Page Header -->
+        <section>
+            <h1 class="text-4xl font-bold tracking-tight">近況.</h1>
+
+            <p class="mt-4 text-muted">
+                一些正在發生的事，以及沒必要寫成文章的紀錄。
+            </p>
+        </section>
+
+        <!-- Currently Watching -->
+        <section class="mt-12">
+            <div class="flex items-center gap-3">
+                <TvMinimalPlay
+                    size={24}
+                    class="text-accent"
+                    aria-hidden="true"
+                />
+                <h2 class="text-2xl font-bold">最近在看</h2>
+            </div>
+
+            <p class="mt-3 text-sm text-muted">
+                新番、補番、重看，總之就是還沒看完。
+            </p>
+
+            <div class="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
+                {watching.map((anime) => (
+                    <a
+                        href={anime.url || undefined}
+                        target={anime.url ? "_blank" : undefined}
+                        rel={anime.url ? "noopener noreferrer" : undefined}
+                        class="group flex items-start gap-4 rounded-xl
+                               border border-line bg-surface p-4
+                               transition-colors hover:bg-hover"
+                    >
+                        <Image
+                            src={anime.image}
+                            alt={`${anime.title} 宣傳海報`}
+                            width={128}
+                            densities={[1, 2]}
+                            loading="eager"
+                            class="h-auto w-24 shrink-0 rounded-lg sm:w-32"
+                        />
+
+                        <div class="min-w-0 flex-1">
+                            <h3 class="font-semibold group-hover:text-accent">
+                                {anime.title}
+                            </h3>
+
+                            <p class="mt-2 text-sm text-accent">
+                                {anime.status} · {anime.progress}
+                            </p>
+
+                            <p class="mt-3 text-sm leading-6 text-muted">
+                                {anime.note}
+                            </p>
+
+                            {anime.url && (
+                                <p class="mt-4 text-xs text-muted">
+                                    前往動畫瘋 ↗
+                                </p>
+                            )}
+                        </div>
+                    </a>
+                ))}
+            </div>
+        </section>
+
+        <!-- Now Archive -->
+        <section class="mt-16 border-t border-line pt-12">
+            <h2 class="text-2xl font-bold">動態牆</h2>
+
+            <div class="mt-8 grid gap-8 md:grid-cols-[10rem_minmax(0,1fr)]">
+                <NowSidebar selectedYear={String(currentYear)} />
+
+                {notes.length > 0 ? (
+                    <div class="min-w-0">
+                        <div class="relative">
+                            <div
+                                id="now-reader"
+                                class="h-112 overflow-y-auto rounded-xl border
+                                       border-line bg-surface p-6 md:h-144"
+                            >
+                                {notes.map(({ data, Content }, index) => (
+                                    <article
+                                        data-now-entry
+                                        data-date={data.pubDate.toLocaleDateString(
+                                            "zh-TW",
+                                        )}
+                                        hidden={index !== notes.length - 1}
+                                    >
+                                        <time
+                                            datetime={data.pubDate.toISOString()}
+                                            class="text-sm text-accent"
+                                        >
+                                            {data.pubDate.toLocaleDateString(
+                                                "zh-TW",
+                                            )}
+                                        </time>
+
+                                        {data.title && (
+                                            <h3 class="mt-4 text-xl font-semibold">
+                                                {data.title}
+                                            </h3>
+                                        )}
+
+                                        <div class="prose post-content mt-5 max-w-none">
+                                            <Content />
+                                        </div>
+                                    </article>
+                                ))}
+                            </div>
+
+                            <div
+                                id="now-scroll-hint"
+                                hidden
+                                aria-hidden="true"
+                                class="pointer-events-none absolute inset-x-px bottom-px
+                                       rounded-b-xl px-5 pt-12 pb-4"
+                                style="background: linear-gradient(to top, var(--surface), transparent)"
+                            >
+                                <p class="text-center text-xs text-muted">
+                                    ↓ 滾動往下閱讀
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="mt-6">
+                            <div class="mb-3 flex items-center justify-between text-sm">
+                                <span class="text-muted">日期</span>
+
+                                <output id="now-current-date">
+                                    {notes[
+                                        notes.length - 1
+                                    ].data.pubDate.toLocaleDateString("zh-TW")}
+                                </output>
+                            </div>
+
+                            <div
+                                id="now-scrubber"
+                                role="slider"
+                                tabindex="0"
+                                aria-label="選擇近況日期"
+                                aria-valuemin="0"
+                                aria-valuemax={notes.length - 1}
+                                aria-valuenow={notes.length - 1}
+                                aria-valuetext={notes[
+                                    notes.length - 1
+                                ].data.pubDate.toLocaleDateString("zh-TW")}
+                                class="relative h-12 cursor-grab touch-pan-y select-none
+                                       overflow-hidden rounded-xl border border-line bg-surface
+                                       active:cursor-grabbing focus-visible:outline-2
+                                       focus-visible:outline-accent"
+                            >
+                                <div
+                                    id="now-ruler"
+                                    aria-hidden="true"
+                                    class="pointer-events-none absolute top-1/2 left-1/2
+                                           flex w-full items-center justify-between
+                                           transition-transform duration-200"
+                                    style={
+                                        notes.length > 1
+                                            ? "transform: translate(-100%, -50%)"
+                                            : "transform: translate(0%, -50%)"
+                                    }
+                                >
+                                    {Array.from({ length: 61 }, (_, i) => (
+                                        <span
+                                            class:list={[
+                                                "w-px shrink-0 bg-muted opacity-60",
+                                                i % 10 === 0 ? "h-6" : "h-3",
+                                            ]}
+                                        />
+                                    ))}
+                                </div>
+
+                                <span
+                                    aria-hidden="true"
+                                    class="pointer-events-none absolute top-1/2 left-1/2
+                                           h-8 w-0.5 -translate-x-1/2 -translate-y-1/2
+                                           rounded bg-accent"
+                                ></span>
+                            </div>
+
+                            <div class="mt-2 flex justify-between text-xs text-muted">
+                                <span>較早</span>
+                                <span>較新</span>
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <p class="min-w-0 text-muted">
+                        還沒有近況，可能作者正在忙著製造近況。
+                    </p>
+                )}
+            </div>
+        </section>
+
+        <script is:inline>
+            (() => {
+                const scrubber = document.querySelector("#now-scrubber");
+                const ruler = document.querySelector("#now-ruler");
+                const reader = document.querySelector("#now-reader");
+                const scrollHint = document.querySelector("#now-scroll-hint");
+                const dateLabel = document.querySelector("#now-current-date");
+                const notes = [
+                    ...document.querySelectorAll("[data-now-entry]"),
+                ];
+
+                if (
+                    !scrubber ||
+                    !ruler ||
+                    !reader ||
+                    !scrollHint ||
+                    !dateLabel ||
+                    !notes.length
+                ) {
+                    return;
+                }
+
+                const max = notes.length - 1;
+                const pixelsPerEntry = 100;
+
+                let position = max;
+                let selected = max;
+                let startX = 0;
+                let startPosition = max;
+                let dragging = false;
+
+                function updateScrollHint() {
+                    const hasMore =
+                        reader.scrollHeight -
+                            reader.scrollTop -
+                            reader.clientHeight >
+                        2;
+
+                    scrollHint.hidden = !hasMore;
+                }
+
+                reader.addEventListener("scroll", updateScrollHint, {
+                    passive: true,
+                });
+
+                const resizeObserver = new ResizeObserver(updateScrollHint);
+
+                resizeObserver.observe(reader);
+                resizeObserver.observe(notes[selected]);
+
+                updateScrollHint();
+
+                function moveTo(value) {
+                    position = Math.max(0, Math.min(max, value));
+
+                    const progress = max > 0 ? position / max : 0;
+
+                    ruler.style.transform = `translate(-${progress * 100}%, -50%)`;
+
+                    const index = Math.round(position);
+                    if (index === selected) return;
+
+                    selected = index;
+
+                    notes.forEach((note, i) => {
+                        note.hidden = i !== selected;
+                    });
+
+                    const date = notes[selected].dataset.date;
+                    dateLabel.textContent = date;
+
+                    scrubber.setAttribute("aria-valuenow", String(selected));
+                    scrubber.setAttribute("aria-valuetext", date);
+
+                    reader.scrollTop = 0;
+                }
+
+                scrubber.addEventListener("pointerdown", (event) => {
+                    if (
+                        max === 0 ||
+                        (event.pointerType === "mouse" && event.button !== 0)
+                    ) {
+                        return;
+                    }
+
+                    dragging = true;
+                    startX = event.clientX;
+                    startPosition = position;
+
+                    ruler.style.transition = "none";
+                    scrubber.setPointerCapture(event.pointerId);
+                    scrubber.focus({ preventScroll: true });
+                });
+
+                scrubber.addEventListener("pointermove", (event) => {
+                    if (!dragging) return;
+
+                    const distance = event.clientX - startX;
+                    moveTo(startPosition - distance / pixelsPerEntry);
+                });
+
+                function finishDrag() {
+                    if (!dragging) return;
+
+                    dragging = false;
+                    ruler.style.transition = "";
+                    moveTo(Math.round(position));
+                }
+
+                scrubber.addEventListener("pointerup", finishDrag);
+                scrubber.addEventListener("pointercancel", finishDrag);
+
+                scrubber.addEventListener("keydown", (event) => {
+                    let next = selected;
+
+                    if (event.key === "ArrowLeft") next--;
+                    else if (event.key === "ArrowRight") next++;
+                    else if (event.key === "Home") next = 0;
+                    else if (event.key === "End") next = max;
+                    else return;
+
+                    event.preventDefault();
+                    moveTo(next);
+                });
+            })();
+        </script>
+    </main>
+</BaseLayout>

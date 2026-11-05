@@ -1,0 +1,237 @@
+---
+import {
+    SquareText,
+    MessageCircle,
+    CircleUserRound,
+    Link,
+    Search,
+    Moon,
+    Sun,
+    Menu,
+} from "@lucide/astro";
+---
+
+<header
+    id="site-header"
+    class="sticky top-0 z-50 border-b border-line bg-page transition-transform duration-300"
+>
+    <nav class="flex w-full items-center gap-3 px-4 py-4 lg:grid lg:grid-cols-3 lg:px-8 lg:py-5">
+        <!-- Logo -->
+        <a href="/" title="回到首頁" class="shrink-0 text-lg font-bold">
+            PAB.
+        </a>
+
+        <!-- Search -->
+        <button
+            id="search-trigger"
+            type="button"
+            aria-label="搜尋文章"
+            class="ml-auto flex shrink-0 items-center gap-2 rounded-lg
+                   p-2 text-sm text-muted hover:bg-hover
+                   lg:ml-0 lg:justify-self-center
+                   lg:border lg:border-line lg:bg-surface lg:px-4 lg:py-2"
+        >
+            <Search size={18} aria-hidden="true" />
+            <span class="hidden lg:inline">Find something useful.</span>
+        </button>
+
+        <!-- Actions -->
+        <div class="flex items-center gap-2 lg:justify-self-end lg:gap-5">
+            <!-- Desktop Navigation -->
+            <div class="hidden items-center gap-5 text-sm lg:flex">
+                <a href="/posts" class="flex items-center gap-1">
+                    <SquareText size={18} aria-hidden="true" />
+                    Posts
+                </a>
+                <a href="/guestbook" class="flex items-center gap-1">
+                    <MessageCircle size={18} aria-hidden="true" />
+                    Guestbook
+                </a>
+                <a href="/blogroll" class="flex items-center gap-1">
+                    <Link size={18} aria-hidden="true" />
+                    Blogroll
+                </a>
+                <a href="/about" class="flex items-center gap-1">
+                    <CircleUserRound size={18} aria-hidden="true" />
+                    About
+                </a>
+            </div>
+
+            <span
+                class="hidden h-5 w-px bg-line lg:block"
+                aria-hidden="true"
+            ></span>
+
+            <!-- Theme Toggle -->
+            <button
+                id="theme-toggle"
+                type="button"
+                aria-label="Toggle dark mode"
+                class="flex items-center justify-center rounded-lg p-2 hover:bg-hover"
+            >
+                <Moon size={18} class="theme-icon-moon" aria-hidden="true" />
+                <Sun size={18} class="theme-icon-sun" aria-hidden="true" />
+            </button>
+
+            <!-- Mobile Menu Button -->
+            <button
+                id="menu-toggle"
+                type="button"
+                aria-label="開啟導覽選單"
+                aria-expanded="false"
+                aria-controls="mobile-menu"
+                class="rounded-lg p-2 hover:bg-hover lg:hidden"
+            >
+                <Menu size={22} aria-hidden="true" />
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Navigation -->
+    <div
+        id="mobile-menu"
+        class="hidden border-t border-line px-4 py-3 lg:hidden"
+    >
+        <div class="flex flex-col gap-1 text-sm">
+            <a href="/posts" class="rounded-lg px-3 py-3 hover:bg-hover">
+                Posts
+            </a>
+            <a href="/comment" class="rounded-lg px-3 py-3 hover:bg-hover">
+                Comment
+            </a>
+            <a href="/blogroll" class="rounded-lg px-3 py-3 hover:bg-hover">
+                Blogroll
+            </a>
+            <a href="/about" class="rounded-lg px-3 py-3 hover:bg-hover">
+                About
+            </a>
+        </div>
+    </div>
+</header>
+
+<!-- Search-dialog -->
+<dialog
+    id="search-dialog"
+    aria-label="搜尋文章"
+    class="fixed top-[8vh] left-1/2 m-0 w-[90vw] max-w-xl
+           -translate-x-1/2 rounded-xl border border-line
+           bg-surface p-5 text-ink shadow-2xl
+           backdrop:bg-black/60 backdrop:backdrop-blur-md"
+>
+    <pagefind-input placeholder="搜尋文章..."></pagefind-input>
+
+    <div class="mt-4 max-h-[60vh] overflow-y-auto">
+        <pagefind-summary></pagefind-summary>
+        <pagefind-results></pagefind-results>
+    </div>
+</dialog>
+
+<script>
+    // Light-Dark Mode
+    const themeButton = document.getElementById("theme-toggle");
+    const root = document.documentElement;
+    const savedTheme = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)",
+    ).matches;
+    const isDark =
+        savedTheme === "dark" || (savedTheme === null && prefersDark);
+
+    root.classList.toggle("dark", isDark);
+    themeButton?.addEventListener("click", () => {
+        const nextDark = root.classList.toggle("dark");
+
+        localStorage.setItem("theme", nextDark ? "dark" : "light");
+    });
+
+    // Header Invisible
+    const header = document.getElementById("site-header");
+
+    let previousY = window.scrollY;
+
+    window.addEventListener(
+        "scroll",
+        () => {
+            const currentY = window.scrollY;
+
+            if (currentY <= 80 || currentY < previousY) {
+                header?.classList.remove("-translate-y-full");
+            } else if (currentY > previousY) {
+                header?.classList.add("-translate-y-full");
+            }
+
+            previousY = currentY;
+        },
+        { passive: true },
+    );
+
+    // Search-dialog tigger
+    const trigger =
+        document.querySelector<HTMLButtonElement>("#search-trigger");
+    const dialog = document.querySelector<HTMLDialogElement>("#search-dialog");
+
+    trigger?.addEventListener("click", () => {
+        dialog?.showModal();
+        dialog?.querySelector("input")?.focus();
+    });
+
+    dialog?.addEventListener("click", (event) => {
+        if (event.target === dialog) dialog.close();
+    });
+    // keyboard shortcut '/' & 'Esc'
+    document.addEventListener("keydown", (event) => {
+        if (event.key !== "/") return;
+
+        const target = event.target;
+        if (
+            target instanceof HTMLElement &&
+            (target.matches("input, textarea, select") ||
+                target.isContentEditable)
+        )
+            return;
+
+        const dialog =
+            document.querySelector<HTMLDialogElement>("#search-dialog");
+        if (dialog?.open) return;
+
+        event.preventDefault();
+        document.querySelector<HTMLButtonElement>("#search-trigger")?.click();
+    });
+    document.addEventListener(
+        "keydown",
+        (event) => {
+            if (event.key === "Escape") {
+                document
+                    .querySelector<HTMLDialogElement>("#search-dialog")
+                    ?.close();
+            }
+        },
+        true,
+    );
+
+    // RWD
+    const menuButton =
+        document.querySelector<HTMLButtonElement>("#menu-toggle");
+    const mobileMenu = document.querySelector<HTMLElement>("#mobile-menu");
+
+    menuButton?.addEventListener("click", () => {
+        const isOpen = mobileMenu?.classList.toggle("hidden") === false;
+
+        menuButton.setAttribute("aria-expanded", String(isOpen));
+        menuButton.setAttribute(
+            "aria-label",
+            isOpen ? "關閉導覽選單" : "開啟導覽選單",
+        );
+    });
+</script>
+
+<style>
+    #search-dialog {
+        --pf-background: var(--surface);
+        --pf-text: var(--fg);
+        --pf-text-secondary: var(--muted);
+        --pf-border: var(--line);
+        --pf-hover: var(--hover);
+        --pf-mark: var(--accent);
+    }
+</style>
