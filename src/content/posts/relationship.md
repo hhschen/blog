@@ -1,6 +1,6 @@
 ---
-title: 那些沒有被聽見的聲音
-description: A Silent Voice
+title: 我在別人臉上畫了一個叉
+description: 《聲之形》裡的叉，象徵對人際關係的恐懼與逃避，為了自我保護，我也畫下了同樣的叉。
 pubDate: 2026-11-09
 updatedDate: 2026-11-09
 category: Gibberish
