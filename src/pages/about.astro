@@ -1,4 +1,5 @@
 ---
+import { Icon } from "astro-icon/components";
 import { Image } from "astro:assets";
 import mascot from "../assets/mascot.jpg";
 import BaseLayout from "../layouts/BaseLayout.astro";
@@ -39,10 +40,11 @@ import { Mail, Rss } from "@lucide/astro";
                         rel="noopener noreferrer"
                         class="inline-flex items-center gap-2 hover:text-ink"
                     >
-                        <i
-                            class="nf nf-fa-github text-lg"
+                        <Icon
+                            name="simple-icons:github"
+                            class="size-4.5 align-middle"
                             aria-hidden="true"
-                        ></i>
+                        />
                         GitHub
                     </a>
 

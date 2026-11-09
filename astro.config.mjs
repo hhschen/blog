@@ -11,12 +11,13 @@ import {
     remarkSpoiler,
     spoilerHastHandlers,
 } from "@mirrordown/remd-spoiler";
+import icon from "astro-icon";
 
 // https://astro.build/config
 
 export default defineConfig({
     site: "https://blog.h2schen.com",
-    integrations: [sitemap()],
+    integrations: [sitemap(), icon()],
 
     vite: {
         plugins: [tailwindcss()],

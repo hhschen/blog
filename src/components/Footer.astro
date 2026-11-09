@@ -1,4 +1,5 @@
 ---
+import { Icon } from "astro-icon/components";
 const year = new Date().getFullYear();
 ---
 
@@ -25,7 +26,11 @@ const year = new Date().getFullYear();
                 aria-label="GitHub"
                 class="hover:text-ink"
             >
-                <i class="nf nf-fa-github text-lg" aria-hidden="true"></i>
+                <Icon
+                    name="simple-icons:github"
+                    class="h-5 w-5"
+                    aria-hidden="true"
+                />
             </a>
         </div>
     </div>
