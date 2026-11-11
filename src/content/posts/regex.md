@@ -3,7 +3,7 @@ title: "正則表達式"
 description: "記錄一下正則表達式的筆記"
 pubDate: 2025-07-20
 updatedDate: 2026-11-11
-category: Studies
+category: Tech
 ---
 
 > [!NOTE/編輯註記]
