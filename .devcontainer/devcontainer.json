@@ -1,6 +1,9 @@
 {
   "name": "Probably a Blog",
   "image": "mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm",
+  "features": {
+    "ghcr.io/anthropics/devcontainer-features/claude-code:1.0": {}
+  },
   "postCreateCommand": "npm ci",
   "forwardPorts": [4321],
   "portsAttributes": {
